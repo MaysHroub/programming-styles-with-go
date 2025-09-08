@@ -28,6 +28,9 @@ func main() {
 	for _, spword := range stopWordsAsSlice {
 		stopWords[spword] = struct{}{}
 	}
+	for r := 'a'; r <= 'z'; r++ {
+		stopWords[string(r)] = struct{}{}
+	}
 
 	// open the file
 	inputFile, err := os.Open("../input.txt")
@@ -49,61 +52,44 @@ func main() {
 				if unicode.IsLetter(c) || unicode.IsDigit(c) {
 					wordStartIdx = i
 				}
-				continue
-			}
-
-			// if it's not the end of the word, just keep looping
-			if unicode.IsLetter(c) || unicode.IsDigit(c) {
-				continue
-			}
-
-			// if we reach the end of the word, we process it
-			word := strings.ToLower(line[wordStartIdx:i])
-
-			// if it's just one letter, ignore it
-			if len(word) == 1 {
-				wordStartIdx = -1 // reset
-				continue
-			}
-
-			// if it's a stop word, ignore it
-			_, exists := stopWords[word]
-			if exists {
-				wordStartIdx = -1 // reset
-				continue
-			}
-
-			// if the word doesn't exist, add it to the map
-			// otherwise, increment its frequency then reorder
-			pairIdx := 0
-			for ; pairIdx < len(wordsFreq); pairIdx++ {
-				if word == wordsFreq[pairIdx].word {
-					wordsFreq[pairIdx].freq++
-					break
+			} else {
+				if !unicode.IsLetter(c) && !unicode.IsDigit(c) {
+					word := strings.ToLower(line[wordStartIdx:i])
+					_, exists := stopWords[word]
+					if !exists {
+						pairIdx := 0
+						found := false
+						for i, wf := range wordsFreq {
+							if word == wf.word {
+								wordsFreq[i].freq++
+								found = true
+								break
+							}
+							pairIdx++
+						}
+						if !found {
+							wordsFreq = append(wordsFreq, pair{word: word, freq: 1})
+						} else {
+							// reorder (word with most frequency first)
+							for i := pairIdx; i > 0; i-- {
+								if wordsFreq[i].freq > wordsFreq[i-1].freq {
+									wordsFreq[i], wordsFreq[i-1] =
+										wordsFreq[i-1], wordsFreq[i]
+								}
+							}
+						}
+					}
+					wordStartIdx = -1 //reset
 				}
 			}
-
-			// the word doesn't exist
-			if pairIdx == len(wordsFreq) {
-				wordsFreq = append(wordsFreq, pair{word: word, freq: 1})
-				wordStartIdx = -1 // reset
-				continue
-			}
-
-			// reorder (word with most frequency first)
-			for i := pairIdx; i > 0; i-- {
-				if wordsFreq[i].freq > wordsFreq[i-1].freq {
-					wordsFreq[i], wordsFreq[i-1] =
-						wordsFreq[i-1], wordsFreq[i]	
-				}
-			}
-
-			wordStartIdx = -1 //reset
 		}
 	}
 
-	for _, wf := range wordsFreq {
+	for i, wf := range wordsFreq {
 		fmt.Printf("%v  -  %v\n", wf.word, wf.freq)
+		if i == 24 {
+			break
+		}
 	}
 
 }
