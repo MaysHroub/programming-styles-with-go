@@ -18,7 +18,7 @@ var wordsFreq = make([]pair, 0)
 var stopWords = make(map[string]struct{})
 
 func main() {
-	// retrieve all stop words
+	// retrieve all stop words (with single letters)
 	stopWordsFileContent, err := os.ReadFile("../stopwords.txt")
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
@@ -32,7 +32,7 @@ func main() {
 		stopWords[string(r)] = struct{}{}
 	}
 
-	// open the file
+	// open the file and read it line by line
 	inputFile, err := os.Open("../input.txt")
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
@@ -44,44 +44,61 @@ func main() {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		line += "\n"
+		line += "\n" // so it doesn't ignore the last word
 		wordStartIdx := -1
 		for i, c := range line {
+
 			// find the start of the word
 			if wordStartIdx == -1 {
 				if unicode.IsLetter(c) || unicode.IsDigit(c) {
 					wordStartIdx = i
 				}
-			} else {
-				if !unicode.IsLetter(c) && !unicode.IsDigit(c) {
-					word := strings.ToLower(line[wordStartIdx:i])
-					_, exists := stopWords[word]
-					if !exists {
-						pairIdx := 0
-						found := false
-						for i, wf := range wordsFreq {
-							if word == wf.word {
-								wordsFreq[i].freq++
-								found = true
-								break
-							}
-							pairIdx++
-						}
-						if !found {
-							wordsFreq = append(wordsFreq, pair{word: word, freq: 1})
-						} else {
-							// reorder (word with most frequency first)
-							for i := pairIdx; i > 0; i-- {
-								if wordsFreq[i].freq > wordsFreq[i-1].freq {
-									wordsFreq[i], wordsFreq[i-1] =
-										wordsFreq[i-1], wordsFreq[i]
-								}
-							}
-						}
-					}
-					wordStartIdx = -1 //reset
+				continue
+			} 
+			
+			// continue looping if it's not the end of the word
+			if unicode.IsLetter(c) || unicode.IsDigit(c) {
+				continue
+			}
+
+			// retrieve the word
+			word := strings.ToLower(line[wordStartIdx:i])
+
+			// if it's a stop word, ignore it and reset the start index
+			_, exists := stopWords[word]
+			if exists {
+				wordStartIdx = -1
+				continue
+			}
+
+			// look for the word and update its frequency if it's found
+			pairIdx := 0
+			found := false
+			for i, wf := range wordsFreq {
+				if word == wf.word {
+					wordsFreq[i].freq++
+					found = true
+					break
+				}
+				pairIdx++
+			}
+
+			// if it's not found, just append it and reset the start index
+			if !found {
+				wordsFreq = append(wordsFreq, pair{word: word, freq: 1})
+				wordStartIdx = -1 
+				continue 
+			} 
+
+			// reorder (word with most frequency first)
+			for i := pairIdx; i > 0; i-- {
+				if wordsFreq[i].freq > wordsFreq[i-1].freq {
+					wordsFreq[i], wordsFreq[i-1] =
+						wordsFreq[i-1], wordsFreq[i]
 				}
 			}
+			
+			wordStartIdx = -1 //reset
 		}
 	}
 
