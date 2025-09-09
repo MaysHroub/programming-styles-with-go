@@ -13,9 +13,10 @@ type pair struct {
 	word string
 	freq int
 }
-
-var wordsFreq = make([]pair, 0)
-var stopWords = make(map[string]struct{})
+var (
+	wordsFreq = make([]pair, 0)
+	stopWords = make(map[string]struct{})
+)
 
 func main() {
 	// retrieve all stop words (with single letters)
