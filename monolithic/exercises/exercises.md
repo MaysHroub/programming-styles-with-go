@@ -27,10 +27,3 @@ I did separate the sorting logic and put it outside the loop and it did improve 
 I honestly don't see any cons with this method. Sorting the words separately is better than sorting them while processing the words. And it has better time complexity.
 
 Assume there are N words in total and M unique words. In most cases N >> M. Sorting the words within the main loop results with O(N.M) time complexity, because in **the worst case**, with each iteration (aka when processing each word) you need to shift the word M shifts after updating its frequency, resulting in O(N.M). Sorting outside the loop, in the other hand, results in O(M^2) time complexity in the worst case. This also allows you to use other sorting algorithms, like quick sort which gives you a better time complexity of O(M log M).
-
-
-## Ex3.4
-
-**"Cyclomatic complexity. What is the cyclomatic complexity of the example program?"**
-
-Too lazy to answer.
