@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -12,17 +11,16 @@ import (
 type DataStorageManager struct {
 	mailbox chan Message
 	words   []string
-	swm     StopWordManager
+	swm     *StopWordManager
 }
 
-func NewDataStorageManager() DataStorageManager {
-	return DataStorageManager{
+func NewDataStorageManager() *DataStorageManager {
+	return &DataStorageManager{
 		mailbox: make(chan Message),
 	}
 }
 
-func (dsm DataStorageManager) Run() {
-	defer close(dsm.mailbox)
+func (dsm *DataStorageManager) Run() {
 	for message := range dsm.mailbox {
 		switch message[0].(string) {
 		case "init":
@@ -33,31 +31,27 @@ func (dsm DataStorageManager) Run() {
 		case "process-words":
 			dsm.processWords(message[1:])
 		case "stop":
-			fmt.Println("stop from dsm")
-			// Send(dsm.swm, Message{"stop"})
+			Send(dsm.swm, Message{"stop"})
 			return
 		}
 	}
 }
 
-func (dsm DataStorageManager) AddToMailbox(message Message) {
+func (dsm *DataStorageManager) AddToMailbox(message Message) {
 	dsm.mailbox <- message
 }
 
-func (dsm DataStorageManager) processWords(message Message) {
-	wfc := message[0].(WordFreqController)
+func (dsm *DataStorageManager) processWords(message Message) {
+	wfc := message[0].(*WordFreqController)
 	for _, w := range dsm.words {
 		Send(dsm.swm, Message{"filter", w})
 	}
 	Send(dsm.swm, Message{"top25", wfc})
-	go func() {
-		Send(dsm, Message{"stop"})
-	}()
 }
 
 func (dsm *DataStorageManager) init(message Message) error {
 	filepath := message[0].(string)
-	dsm.swm = message[1].(StopWordManager)
+	dsm.swm = message[1].(*StopWordManager)
 	data, err := os.ReadFile(filepath)
 	if err != nil {
 		return err

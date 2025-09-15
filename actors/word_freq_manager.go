@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sort"
 )
 
@@ -15,15 +14,14 @@ type WordFreqManager struct {
 	wordfreqs map[string]int
 }
 
-func NewWordFreqManager() WordFreqManager {
-	return WordFreqManager{
+func NewWordFreqManager() *WordFreqManager {
+	return &WordFreqManager{
 		mailbox:   make(chan Message),
 		wordfreqs: make(map[string]int),
 	}
 }
 
-func (wfm WordFreqManager) Run() {
-	defer close(wfm.mailbox)
+func (wfm *WordFreqManager) Run() {
 	for message := range wfm.mailbox {
 		switch message[0].(string) {
 		case "count-freq":
@@ -31,24 +29,23 @@ func (wfm WordFreqManager) Run() {
 		case "top25":
 			wfm.generateTop25Words(message[1:])
 		case "stop":
-			fmt.Println("stop in wfm")
 			return
 		}
 	}
 }
 
-func (wfm WordFreqManager) AddToMailbox(message Message) {
+func (wfm *WordFreqManager) AddToMailbox(message Message) {
 	wfm.mailbox <- message
 }
 
-func (wfm WordFreqManager) incrementCount(message Message) {
+func (wfm *WordFreqManager) incrementCount(message Message) {
 	word := message[0].(string)
 	wfm.wordfreqs[word]++
 }
 
-func (wfm WordFreqManager) generateTop25Words(message Message) {
+func (wfm *WordFreqManager) generateTop25Words(message Message) {
 	pairs := []pair{}
-	wfc := message[0].(WordFreqController)
+	wfc := message[0].(*WordFreqController)
 	for w, f := range wfm.wordfreqs {
 		pairs = append(pairs, pair{word: w, freq: f})
 	}
@@ -56,7 +53,4 @@ func (wfm WordFreqManager) generateTop25Words(message Message) {
 		return pairs[i].freq >= pairs[j].freq
 	})
 	Send(wfc, Message{"display-top25", pairs})
-	go func() {
-		Send(wfm, Message{"stop"})
-	}()
 }

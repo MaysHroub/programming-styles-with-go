@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -10,18 +9,17 @@ import (
 type StopWordManager struct {
 	mailbox   chan Message
 	stopwords map[string]struct{}
-	wfm       WordFreqManager
+	wfm       *WordFreqManager
 }
 
-func NewStopWordManager() StopWordManager {
-	return StopWordManager{
+func NewStopWordManager() *StopWordManager {
+	return &StopWordManager{
 		mailbox:   make(chan Message),
 		stopwords: make(map[string]struct{}),
 	}
 }
 
-func (swm StopWordManager) Run() {
-	defer close(swm.mailbox)
+func (swm *StopWordManager) Run() {
 	for message := range swm.mailbox {
 		switch message[0].(string) {
 		case "init":
@@ -32,23 +30,19 @@ func (swm StopWordManager) Run() {
 		case "filter":
 			swm.filterWord(message[1:])
 		case "stop":
-			fmt.Println("stop from swm")
-			// Send(swm.wfm, Message{"stop"})
+			Send(swm.wfm, Message{"stop"})
 			return
 		default: // forward
 			Send(swm.wfm, message)
-			go func() {
-				Send(swm, Message{"stop"})
-			}()
 		}
 	}
 }
 
-func (swm StopWordManager) AddToMailbox(message Message) {
+func (swm *StopWordManager) AddToMailbox(message Message) {
 	swm.mailbox <- message
 }
 
-func (swm StopWordManager) filterWord(message Message) {
+func (swm *StopWordManager) filterWord(message Message) {
 	word := message[0].(string)
 	if _, ok := swm.stopwords[word]; !ok {
 		Send(swm.wfm, Message{"count-freq", word})
@@ -57,13 +51,13 @@ func (swm StopWordManager) filterWord(message Message) {
 
 func (swm *StopWordManager) init(message Message) error {
 	filepath := message[0].(string)
-	swm.wfm = message[1].(WordFreqManager)
+	swm.wfm = message[1].(*WordFreqManager)
 	data, err := os.ReadFile(filepath)
 	if err != nil {
 		return err
 	}
-	spwords := strings.Split(string(data), ",")
-	for _, sw := range spwords {
+	spwords := strings.SplitSeq(string(data), ",")
+	for sw := range spwords {
 		swm.stopwords[sw] = struct{}{}
 	}
 	for r := 'a'; r <= 'z'; r++ {

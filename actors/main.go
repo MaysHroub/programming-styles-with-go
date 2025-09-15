@@ -20,7 +20,7 @@ func main() {
 		wg.Add(1)
 		go func (a Actor)  {
 			defer wg.Done()
-			ac.Run()
+			a.Run()
 		}(ac)
 	}
 
