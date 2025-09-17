@@ -30,17 +30,13 @@ func main() {
 	}
 	chunks := partition(string(data), nlines)
 
-	start := time.Now().Nanosecond()
+	now := time.Now()
 
 	pairsLists := map_(split, chunks)
-	
 	filteredPairs := removeStopWords(pairsLists)
-
 	wordsFreq := reduce(countWords, filteredPairs)
 
-	end := time.Now().Nanosecond()
-
-	fmt.Println("Execution time: " + fmt.Sprint(end-start))
+	fmt.Printf("Execution time: %v\n\n", time.Since(now))
 
 	sort.Slice(wordsFreq, func(i, j int) bool {
 		return wordsFreq[i].freq >= wordsFreq[j].freq
