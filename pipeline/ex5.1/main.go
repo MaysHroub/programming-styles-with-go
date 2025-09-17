@@ -18,10 +18,6 @@ func main() {
 	// composing all functions together
 	filename := "../input.txt"
 	printAll(sortedPairs(countFrequencies(removeStopWords(convertToSlice(normalizeText(readData(filename)))))))
-
-	// this is part of exercise 5.2
-	stopWordsFilename := "../stopwords.txt"
-	printAll(sortedPairs(countFrequencies(removeStopWordsGivenFileName(stopWordsFilename)(convertToSlice(normalizeText(readData(filename)))))))
 }
 
 func readData(filename string) (fileContent string) {
@@ -91,33 +87,5 @@ func printAll(wordsFreq []pair) {
 	if len(wordsFreq) > 0 {
 		fmt.Printf("%s  -  %d\n", wordsFreq[0].word, wordsFreq[0].freq)
 		printAll(wordsFreq[1:])
-	}
-}
-
-// this is part of exercise 5.2
-func removeStopWordsGivenFileName(filename string) func([]string) []string {
-	return func(words []string) []string {
-		data, err := os.ReadFile(filename)
-		if err != nil {
-			return nil
-		}
-		stopwordsAsSlice := strings.Split(string(data), ",")
-		stopwords := make(map[string]struct{})
-		for _, sp := range stopwordsAsSlice {
-			stopwords[strings.ToLower(strings.TrimSpace(sp))] = struct{}{}
-		}
-		for r := 'a'; r <= 'z'; r++ {
-			stopwords[string(r)] = struct{}{}
-		}
-		filteredWords := []string{}
-		for _, w := range words {
-			if w == "" {
-				continue
-			}
-			if _, ok := stopwords[w]; !ok {
-				filteredWords = append(filteredWords, w)
-			}
-		}
-		return filteredWords
 	}
 }
