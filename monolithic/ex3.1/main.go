@@ -13,6 +13,7 @@ type pair struct {
 	word string
 	freq int
 }
+
 var (
 	wordsFreq = make([]pair, 0)
 	stopWords = make(map[string]struct{})
@@ -20,7 +21,7 @@ var (
 
 func main() {
 	// retrieve all stop words (with single letters)
-	stopWordsFileContent, err := os.ReadFile("../../../stopwords.txt")
+	stopWordsFileContent, err := os.ReadFile("../stopwords.txt")
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		return
@@ -34,7 +35,7 @@ func main() {
 	}
 
 	// open the file and read it line by line
-	inputFile, err := os.Open("../../../input.txt")
+	inputFile, err := os.Open("../input.txt")
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		return
@@ -55,8 +56,8 @@ func main() {
 					wordStartIdx = i
 				}
 				continue
-			} 
-			
+			}
+
 			// continue looping if it's not the end of the word
 			if unicode.IsLetter(c) || unicode.IsDigit(c) {
 				continue
@@ -87,18 +88,19 @@ func main() {
 			// if it's not found, just append it and reset the start index
 			if !found {
 				wordsFreq = append(wordsFreq, pair{word: word, freq: 1})
-				wordStartIdx = -1 
-				continue 
-			} 
-			
-			wordStartIdx = -1 //reset
-		}
-	}
+				wordStartIdx = -1
+				continue
+			}
 
-	// reorder (word with most frequency first) using insertion sort
-	for i := 0; i < len(wordsFreq); i++ {
-		for j := i-1; j >= 0 && wordsFreq[j].freq < wordsFreq[j+1].freq; j-- {
-			wordsFreq[j], wordsFreq[j+1] = wordsFreq[j+1], wordsFreq[j]
+			// reorder (word with most frequency first)
+			for i := pairIdx; i > 0; i-- {
+				if wordsFreq[i].freq > wordsFreq[i-1].freq {
+					wordsFreq[i], wordsFreq[i-1] =
+						wordsFreq[i-1], wordsFreq[i]
+				}
+			}
+
+			wordStartIdx = -1 //reset
 		}
 	}
 
