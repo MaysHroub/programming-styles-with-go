@@ -1,22 +1,20 @@
-package controller
+package thing
 
 import (
 	"fmt"
-
-	"github.com/MaysHroub/programming-styles-with-go/things/manager"
 )
 
 type WordFrequencyController struct {
-	dataStorageMgr manager.DataStorageManager
-	stopWordsMgr   manager.StopWordsManager
-	wordFreqMgr    manager.WordFreqManager
+	dataStorageMgr DataStorageManager
+	stopWordsMgr   StopWordsManager
+	wordFreqMgr    WordFreqManager
 }
 
 func NewWordFreqController(inputFileName, stopWordsFileName string) WordFrequencyController {
 	return WordFrequencyController{
-		dataStorageMgr: manager.NewDataStorageManager(inputFileName),
-		stopWordsMgr:   manager.NewStopWordManager(stopWordsFileName),
-		wordFreqMgr:    manager.NewWordFreqManager(),
+		dataStorageMgr: NewDataStorageManager(inputFileName),
+		stopWordsMgr:   NewStopWordManager(stopWordsFileName),
+		wordFreqMgr:    NewWordFreqManager(),
 	}
 }
 
