@@ -16,19 +16,20 @@ func NewQuarantine() quarantine {
 
 func (q *quarantine) bind(f func(any) any) *quarantine {
 	q.funcs = append(q.funcs, f)
-	return q 
+	return q
 }
 
 func (q *quarantine) execute() {
-	guardCallable := func(v any) any {
-		if f, ok := v.(func() any); ok {
-			return f()
-		}
-		return v
-	}
 	var val any = func() any { return nil }
 	for _, f := range q.funcs {
 		val = f(guardCallable(val))
 	}
 	fmt.Println(guardCallable(val))
+}
+
+func guardCallable(v any) any {
+	if f, ok := v.(func() any); ok {
+		return f()
+	}
+	return v
 }
