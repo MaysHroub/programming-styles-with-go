@@ -117,12 +117,11 @@ func filterWords(mp *map[string][]int) {
 
 func splitAndCount(page page, re *regexp.Regexp) map[string][]int {
 	words := re.Split(page.content, -1)
-	n := page.number
 
 	mp := map[string][]int{}
 
 	for _, w := range words {
-		mp[w] = append(mp[w], n)
+		mp[w] = append(mp[w], page.number)
 	}
 	return mp
 }

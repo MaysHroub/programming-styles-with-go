@@ -1,4 +1,4 @@
-package main
+package actor 
 
 type Message []any
 
