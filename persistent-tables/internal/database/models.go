@@ -4,15 +4,14 @@
 
 package database
 
-type Char struct {
-	ID     int64
-	Val    string
-	WordID int64
-}
-
 type Document struct {
 	ID   int64
 	Name string
+}
+
+type Stopword struct {
+	ID  int64
+	Val string
 }
 
 type Word struct {
