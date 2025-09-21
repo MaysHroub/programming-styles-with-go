@@ -29,14 +29,13 @@ func main() {
 		log.Fatalf("couldn't save stopwords in database: %v", err)
 	}
 
-	wordsFreq, err := dbio.GetWordsFreq(db, docID)
+	limit := 25
+	wordsFreq, err := dbio.GetWordsFreq(db, docID, int64(limit))
 	if err != nil {
 		log.Fatalf("couldn't retreive words-frequences: %v\n", err)
 	}
 
-	limit := min(25, len(wordsFreq))
 	for _, wf := range wordsFreq[:limit] {
 		fmt.Printf("%s  -  %d\n", wf.Word, wf.Freq)
 	}
 }
-

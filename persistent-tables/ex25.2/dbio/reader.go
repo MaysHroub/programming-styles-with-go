@@ -7,7 +7,10 @@ import (
 	"github.com/MaysHroub/programming-styles-with-go/persistent-tables/internal/database"
 )
 
-func GetWordsFreq(db *sql.DB, docID int64) ([]database.GetWordsFreqRow, error) {
+func GetWordsFreq(db *sql.DB, docID, limit int64) ([]database.GetWordsFreqRow, error) {
 	dbQueries := database.New(db)
-	return dbQueries.GetWordsFreq(context.Background(), docID)
+	return dbQueries.GetWordsFreq(context.Background(), database.GetWordsFreqParams{
+		ID: docID,
+		Limit: limit,
+	})
 }

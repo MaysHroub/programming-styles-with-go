@@ -41,10 +41,6 @@ func main() {
 		ID: docID,
 		Limit: int64(limit),
 	})
-	if err != nil {
-		log.Fatalf("couldn't retreive words-frequences: %v\n", err)
-	}
-
 	for _, wf := range wordsFreq[:limit] {
 		fmt.Printf("%s  -  %d\n", wf.Word, wf.Freq)
 	}

@@ -12,7 +12,9 @@ WHERE
 GROUP BY
     w.val
 ORDER BY
-    freq DESC;
+    freq DESC
+LIMIT
+    ?;
 
 
 -- name: AddDocument :one

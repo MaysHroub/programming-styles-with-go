@@ -73,15 +73,22 @@ GROUP BY
     w.val
 ORDER BY
     freq DESC
+LIMIT
+    ?
 `
+
+type GetWordsFreqParams struct {
+	ID    int64
+	Limit int64
+}
 
 type GetWordsFreqRow struct {
 	Word string
 	Freq int64
 }
 
-func (q *Queries) GetWordsFreq(ctx context.Context, id int64) ([]GetWordsFreqRow, error) {
-	rows, err := q.db.QueryContext(ctx, getWordsFreq, id)
+func (q *Queries) GetWordsFreq(ctx context.Context, arg GetWordsFreqParams) ([]GetWordsFreqRow, error) {
+	rows, err := q.db.QueryContext(ctx, getWordsFreq, arg.ID, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
