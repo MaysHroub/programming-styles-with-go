@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	INPUT_FILEPATH = "../../input.txt"
-	NLINE_PER_PAGE = 45
+	INPUT_FILEPATH      = "../../input.txt"
+	NLINE_PER_PAGE      = 45
 	FREQ_LIMIT_PER_WORD = 100
 )
 

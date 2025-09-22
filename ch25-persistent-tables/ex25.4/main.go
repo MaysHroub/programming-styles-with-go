@@ -12,7 +12,7 @@ import (
 
 func main() {
 	pathToDB := "../sql/schema/testdb.db"
-	filename := "../../input.txt"
+	filepath := "../../input.txt"
 	stopwordsfile := "../../stopwords.txt"
 	batchSize := 1000
 	limit := 25
@@ -22,7 +22,7 @@ func main() {
 		log.Fatalf("couldn't connect to database: %v\n", err)
 	}
 
-	_, err = dbio.LoadFileIntoDatabase(filename, db, batchSize)
+	_, err = dbio.LoadFileIntoDatabase(filepath, db, batchSize)
 	if err != nil {
 		log.Fatalf("couldn't load file into database: %v", err)
 	}

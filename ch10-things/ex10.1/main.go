@@ -1,6 +1,6 @@
 package main
 
-import "github.com/MaysHroub/programming-styles-with-go/things/thing"
+import "github.com/MaysHroub/programming-styles-with-go/things/ex10.1/thing"
 
 func main() {
 	inputFileName := "../input.txt"

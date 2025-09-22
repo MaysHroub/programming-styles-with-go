@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	inputfilepath := "../../input.txt"
 	stopwordfilepath := "../../stopwords.txt"
 

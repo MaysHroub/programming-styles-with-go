@@ -15,9 +15,9 @@ type pair struct {
 }
 
 func main() {
-	filename := "../input.txt"
-	stopWordsFilename := "../stopwords.txt"
-	printAll(sortedPairs(countFrequencies(removeStopWordsGivenFileName(stopWordsFilename)(convertToSlice(normalizeText(readData(filename)))))))
+	// composing all functions together
+	filename := "../../input.txt"
+	printAll(sortedPairs(countFrequencies(removeStopWords(convertToSlice(normalizeText(readData(filename)))))))
 }
 
 func readData(filename string) (fileContent string) {
@@ -40,6 +40,28 @@ func normalizeText(text string) (normalizedText string) {
 func convertToSlice(text string) []string {
 	re := regexp.MustCompile(`\s+`)
 	return re.Split(text, -1)
+}
+
+func removeStopWords(words []string) []string {
+	data, err := os.ReadFile("../stopwords.txt")
+	if err != nil {
+		return nil
+	}
+	stopwordsAsSlice := strings.Split(string(data), ",")
+	stopwords := make(map[string]struct{})
+	for _, sp := range stopwordsAsSlice {
+		stopwords[strings.TrimSpace(sp)] = struct{}{}
+	}
+	for r := 'a'; r <= 'z'; r++ {
+		stopwords[string(r)] = struct{}{}
+	}
+	filteredWords := []string{}
+	for _, w := range words {
+		if _, ok := stopwords[w]; !ok {
+			filteredWords = append(filteredWords, w)
+		}
+	}
+	return filteredWords
 }
 
 func countFrequencies(words []string) map[string]int {
@@ -65,32 +87,5 @@ func printAll(wordsFreq []pair) {
 	if len(wordsFreq) > 0 {
 		fmt.Printf("%s  -  %d\n", wordsFreq[0].word, wordsFreq[0].freq)
 		printAll(wordsFreq[1:])
-	}
-}
-
-func removeStopWordsGivenFileName(filename string) func([]string) []string {
-	return func(words []string) []string {
-		data, err := os.ReadFile(filename)
-		if err != nil {
-			return nil
-		}
-		stopwordsAsSlice := strings.Split(string(data), ",")
-		stopwords := make(map[string]struct{})
-		for _, sp := range stopwordsAsSlice {
-			stopwords[strings.ToLower(strings.TrimSpace(sp))] = struct{}{}
-		}
-		for r := 'a'; r <= 'z'; r++ {
-			stopwords[string(r)] = struct{}{}
-		}
-		filteredWords := []string{}
-		for _, w := range words {
-			if w == "" {
-				continue
-			}
-			if _, ok := stopwords[w]; !ok {
-				filteredWords = append(filteredWords, w)
-			}
-		}
-		return filteredWords
 	}
 }

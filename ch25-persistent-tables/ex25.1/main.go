@@ -16,7 +16,7 @@ import (
 
 func main() {
 	pathToDB := "../sql/schema/testdb.db"
-	filename := "../../test.txt"
+	filepath := "../../input.txt"
 	stopwordsfile := "../../stopwords.txt"
 	batchSize := 1000
 
@@ -26,7 +26,7 @@ func main() {
 	}
 	db.SetMaxOpenConns(1)
 
-	docID, err := loadFileIntoDatabase(filename, db, batchSize)
+	docID, err := loadFileIntoDatabase(filepath, db, batchSize)
 	if err != nil {
 		log.Fatalf("couldn't load file into database: %v", err)
 	}
