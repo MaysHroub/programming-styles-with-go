@@ -12,19 +12,28 @@ import (
 	"unicode/utf8"
 )
 
-const (
-	FREQ_LIMIT_PER_WORD = 100
-	INPUT_FILENAME      = "../../input.txt"
-	NLINES_PER_PAGE     = 45
-)
-
 type page struct {
 	content string
 	number  int
 }
 
 func main() {
-	printSorted(removeDuplicatedPageNums(filterWords(splitAndCountWords(separateIntoPages(normalize(readData(INPUT_FILENAME)))))))
+	filepath := "../../input.txt"
+	nlinesPerPage := 45
+	freqLimitPerWord := 100
+	printSorted(
+		removeDuplicatedPageNums(
+			filterWords(freqLimitPerWord)(
+				splitAndCountWords(
+					separateIntoPages(nlinesPerPage)(
+						normalize(
+							readData(filepath),
+						),
+					),
+				),
+			),
+		),
+	)
 }
 
 func readData(filepath string) (lines []string) {
@@ -57,23 +66,25 @@ func normalize(lines []string) []string {
 	return normalized
 }
 
-func separateIntoPages(lines []string) []page {
-	pages := []page{}
-	p := 1
-	for i := 0; i < len(lines); i += NLINES_PER_PAGE {
+func separateIntoPages(nlinesPerPage int) func([]string) []page {
+	return func(lines []string) []page {
+		pages := []page{}
+		p := 1
+		for i := 0; i < len(lines); i += nlinesPerPage {
 
-		var content string
+			var content string
 
-		if len(lines) >= i+NLINES_PER_PAGE {
-			content = strings.Join(lines[i:i+NLINES_PER_PAGE], "\n")
-		} else {
-			content = strings.Join(lines[i:], " ")
+			if len(lines) >= i+nlinesPerPage {
+				content = strings.Join(lines[i:i+nlinesPerPage], "\n")
+			} else {
+				content = strings.Join(lines[i:], " ")
+			}
+
+			pages = append(pages, page{content: content, number: p})
+			p++
 		}
-
-		pages = append(pages, page{content: content, number: p})
-		p++
+		return pages
 	}
-	return pages
 }
 
 func splitAndCountWords(pages []page) map[string][]int {
@@ -88,15 +99,17 @@ func splitAndCountWords(pages []page) map[string][]int {
 	return mp
 }
 
-func filterWords(wordPages map[string][]int) map[string][]int {
-	filteredMp := make(map[string][]int)
-	for w, nums := range wordPages {
-		if len(nums) > FREQ_LIMIT_PER_WORD || utf8.RuneCountInString(w) <= 1 {
-			continue
+func filterWords(freqLimitPerWord int) func(map[string][]int) map[string][]int {
+	return func(wordPages map[string][]int) map[string][]int {
+		filteredMp := make(map[string][]int)
+		for w, nums := range wordPages {
+			if len(nums) > freqLimitPerWord || utf8.RuneCountInString(w) <= 1 {
+				continue
+			}
+			filteredMp[w] = nums
 		}
-		filteredMp[w] = nums
+		return filteredMp
 	}
-	return filteredMp
 }
 
 func removeDuplicatedPageNums(wordPages map[string][]int) map[string][]int {

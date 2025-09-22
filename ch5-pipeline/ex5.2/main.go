@@ -15,9 +15,9 @@ type pair struct {
 }
 
 func main() {
-	filename := "../../lightweightinput.txt"
-	stopWordsFilename := "../../stopwords.txt"
-	printAll(sortedPairs(countFrequencies(removeStopWordsGivenFileName(stopWordsFilename)(convertToSlice(normalizeText(readData(filename)))))))
+	filepath := "../../input.txt"
+	stopWordsFilepath := "../../stopwords.txt"
+	printAll(sortedPairs(countFrequencies(removeStopWordsGivenFileName(stopWordsFilepath)(convertToSlice(normalizeText(readData(filepath)))))))
 }
 
 func readData(filename string) (fileContent string) {

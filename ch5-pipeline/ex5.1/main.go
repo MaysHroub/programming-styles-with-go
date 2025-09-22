@@ -16,12 +16,12 @@ type pair struct {
 
 func main() {
 	// composing all functions together
-	filename := "../../input.txt"
-	printAll(sortedPairs(countFrequencies(removeStopWords(convertToSlice(normalizeText(readData(filename)))))))
+	filepath := "../../input.txt"
+	printAll(sortedPairs(countFrequencies(removeStopWords(convertToSlice(normalizeText(readData(filepath)))))))
 }
 
-func readData(filename string) (fileContent string) {
-	data, err := os.ReadFile(filename)
+func readData(filepath string) (fileContent string) {
+	data, err := os.ReadFile(filepath)
 	if err != nil {
 		return ""
 	}
