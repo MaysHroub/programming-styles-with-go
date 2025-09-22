@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 )
 
 const addDocument = `-- name: AddDocument :one
@@ -58,16 +59,263 @@ func (q *Queries) AddWord(ctx context.Context, arg AddWordParams) (Word, error) 
 	return i, err
 }
 
+const getAllDocIDs = `-- name: GetAllDocIDs :many
+SELECT
+    id
+FROM
+    documents
+`
+
+func (q *Queries) GetAllDocIDs(ctx context.Context) ([]int64, error) {
+	rows, err := q.db.QueryContext(ctx, getAllDocIDs)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getAvgWordLength = `-- name: GetAvgWordLength :one
+SELECT
+    AVG(LENGTH(val))
+FROM
+    words
+`
+
+// e. Average word length
+func (q *Queries) GetAvgWordLength(ctx context.Context) (sql.NullFloat64, error) {
+	row := q.db.QueryRowContext(ctx, getAvgWordLength)
+	var avg sql.NullFloat64
+	err := row.Scan(&avg)
+	return avg, err
+}
+
+const getCharsCountPerDoc = `-- name: GetCharsCountPerDoc :many
+SELECT
+    doc_id,
+    SUM(LENGTH(val)) AS chars_count
+FROM
+    words
+GROUP BY
+    doc_id
+`
+
+type GetCharsCountPerDocRow struct {
+	DocID      int64
+	CharsCount sql.NullFloat64
+}
+
+// c. Character count per book
+func (q *Queries) GetCharsCountPerDoc(ctx context.Context) ([]GetCharsCountPerDocRow, error) {
+	rows, err := q.db.QueryContext(ctx, getCharsCountPerDoc)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetCharsCountPerDocRow
+	for rows.Next() {
+		var i GetCharsCountPerDocRow
+		if err := rows.Scan(&i.DocID, &i.CharsCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getCombinedLengthOfTop25WordsPerDoc = `-- name: GetCombinedLengthOfTop25WordsPerDoc :many
+WITH
+    word_frequencies AS (
+        -- First, count the frequency of each word in each document
+        SELECT
+            w.doc_id,
+            w.val AS word,
+            COUNT(*) AS freq
+        FROM
+            words w
+            LEFT JOIN stopwords sw ON sw.val = w.val
+        WHERE
+            sw.val IS NULL
+        GROUP BY
+            w.doc_id,
+            w.val
+    ),
+    ranked_words AS (
+        -- Then, rank words by frequency within each document
+        SELECT
+            doc_id,
+            word,
+            ROW_NUMBER() OVER (
+                PARTITION BY
+                    doc_id
+                ORDER BY
+                    freq DESC
+            ) AS rn
+        FROM
+            word_frequencies
+    )
+    -- Finally, filter for the top 25 words in each document and calculate the sum of their lengths
+SELECT
+    doc_id,
+    SUM(LENGTH(word)) AS combined_length
+FROM
+    ranked_words
+WHERE
+    rn <= 25
+GROUP BY
+    doc_id
+`
+
+type GetCombinedLengthOfTop25WordsPerDocRow struct {
+	DocID          int64
+	CombinedLength sql.NullFloat64
+}
+
+// f. Combined length of characters in the top 25 words of each book (this one gemini made it)
+func (q *Queries) GetCombinedLengthOfTop25WordsPerDoc(ctx context.Context) ([]GetCombinedLengthOfTop25WordsPerDocRow, error) {
+	rows, err := q.db.QueryContext(ctx, getCombinedLengthOfTop25WordsPerDoc)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetCombinedLengthOfTop25WordsPerDocRow
+	for rows.Next() {
+		var i GetCombinedLengthOfTop25WordsPerDocRow
+		if err := rows.Scan(&i.DocID, &i.CombinedLength); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getLongestWordsPerDoc = `-- name: GetLongestWordsPerDoc :many
+WITH
+    ranked_words AS (
+        SELECT
+            doc_id,
+            val,
+            RANK() OVER (
+                PARTITION BY
+                    doc_id
+                ORDER BY
+                    LENGTH(val) DESC
+            ) AS rnk
+        FROM
+            words
+    )
+SELECT
+    doc_id,
+    val AS longest_word
+FROM
+    ranked_words
+WHERE
+    rnk = 1
+`
+
+type GetLongestWordsPerDocRow struct {
+	DocID       int64
+	LongestWord string
+}
+
+// d. Longest word per book
+func (q *Queries) GetLongestWordsPerDoc(ctx context.Context) ([]GetLongestWordsPerDocRow, error) {
+	rows, err := q.db.QueryContext(ctx, getLongestWordsPerDoc)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetLongestWordsPerDocRow
+	for rows.Next() {
+		var i GetLongestWordsPerDocRow
+		if err := rows.Scan(&i.DocID, &i.LongestWord); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getWordsCountPerDoc = `-- name: GetWordsCountPerDoc :many
+SELECT
+    doc_id,
+    COUNT(*) AS words_count
+FROM
+    words
+GROUP BY
+    doc_id
+`
+
+type GetWordsCountPerDocRow struct {
+	DocID      int64
+	WordsCount int64
+}
+
+// b. Word count per book
+func (q *Queries) GetWordsCountPerDoc(ctx context.Context) ([]GetWordsCountPerDocRow, error) {
+	rows, err := q.db.QueryContext(ctx, getWordsCountPerDoc)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetWordsCountPerDocRow
+	for rows.Next() {
+		var i GetWordsCountPerDocRow
+		if err := rows.Scan(&i.DocID, &i.WordsCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getWordsFreq = `-- name: GetWordsFreq :many
 SELECT
     w.val AS word,
     COUNT(*) AS freq
 FROM
     words w
-    JOIN documents d ON d.id = w.doc_id
     LEFT JOIN stopwords sw ON sw.val = w.val
 WHERE
-    d.id = ?
+    w.doc_id = ?
     AND sw.val IS NULL
 GROUP BY
     w.val
@@ -78,7 +326,7 @@ LIMIT
 `
 
 type GetWordsFreqParams struct {
-	ID    int64
+	DocID int64
 	Limit int64
 }
 
@@ -88,7 +336,7 @@ type GetWordsFreqRow struct {
 }
 
 func (q *Queries) GetWordsFreq(ctx context.Context, arg GetWordsFreqParams) ([]GetWordsFreqRow, error) {
-	rows, err := q.db.QueryContext(ctx, getWordsFreq, arg.ID, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, getWordsFreq, arg.DocID, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -97,6 +345,55 @@ func (q *Queries) GetWordsFreq(ctx context.Context, arg GetWordsFreqParams) ([]G
 	for rows.Next() {
 		var i GetWordsFreqRow
 		if err := rows.Scan(&i.Word, &i.Freq); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getWordsFreqPerDoc = `-- name: GetWordsFreqPerDoc :many
+SELECT
+    w.doc_id,
+    w.val AS word,
+    COUNT(*) AS freq
+FROM
+    words w
+    LEFT JOIN stopwords sw ON sw.val = w.val
+WHERE
+    sw.val IS NULL
+GROUP BY
+    w.doc_id,
+    w.val
+ORDER BY
+    freq DESC
+LIMIT
+    ?
+`
+
+type GetWordsFreqPerDocRow struct {
+	DocID int64
+	Word  string
+	Freq  int64
+}
+
+// a. 25 most frequent words per book
+func (q *Queries) GetWordsFreqPerDoc(ctx context.Context, limit int64) ([]GetWordsFreqPerDocRow, error) {
+	rows, err := q.db.QueryContext(ctx, getWordsFreqPerDoc, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetWordsFreqPerDocRow
+	for rows.Next() {
+		var i GetWordsFreqPerDocRow
+		if err := rows.Scan(&i.DocID, &i.Word, &i.Freq); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

@@ -15,8 +15,8 @@ import (
 )
 
 func main() {
-	pathToDB := "../sql/schema/testdb"
-	filename := "../../input.txt"
+	pathToDB := "../sql/schema/testdb.db"
+	filename := "../../test.txt"
 	stopwordsfile := "../../stopwords.txt"
 	batchSize := 1000
 
@@ -24,6 +24,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("couldn't connect to database: %v\n", err)
 	}
+	db.SetMaxOpenConns(1)
 
 	docID, err := loadFileIntoDatabase(filename, db, batchSize)
 	if err != nil {
@@ -38,14 +39,14 @@ func main() {
 	dbQueries := database.New(db)
 	limit := 25
 	wordsFreq, err := dbQueries.GetWordsFreq(context.Background(), database.GetWordsFreqParams{
-		ID: docID,
+		DocID: docID,
 		Limit: int64(limit),
 	})
 	if err != nil {
 		log.Fatalf("couldn't retreive words-frequences: %v\n", err)
 	}
 
-	for _, wf := range wordsFreq[:limit] {
+	for _, wf := range wordsFreq {
 		fmt.Printf("%s  -  %d\n", wf.Word, wf.Freq)
 	}
 }

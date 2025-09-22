@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	pathToDB := "../sql/schema/testdb"
+	pathToDB := "../sql/schema/testdb.db"
 	filename := "../../input.txt"
 	stopwordsfile := "../../stopwords.txt"
 	batchSize := 1000
@@ -35,7 +35,7 @@ func main() {
 		log.Fatalf("couldn't retreive words-frequences: %v\n", err)
 	}
 
-	for _, wf := range wordsFreq[:limit] {
+	for _, wf := range wordsFreq {
 		fmt.Printf("%s  -  %d\n", wf.Word, wf.Freq)
 	}
 }

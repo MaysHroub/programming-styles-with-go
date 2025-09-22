@@ -10,7 +10,7 @@ import (
 func GetWordsFreq(db *sql.DB, docID, limit int64) ([]database.GetWordsFreqRow, error) {
 	dbQueries := database.New(db)
 	return dbQueries.GetWordsFreq(context.Background(), database.GetWordsFreqParams{
-		ID: docID,
+		DocID: docID,
 		Limit: limit,
 	})
 }

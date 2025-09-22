@@ -1,138 +1,89 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
-	"regexp"
-	"strings"
-	"unicode"
 
+	"github.com/MaysHroub/programming-styles-with-go/persistent-tables/ex25.4/dbio"
 	"github.com/MaysHroub/programming-styles-with-go/persistent-tables/internal/database"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	pathToDB := "../sql/schema/testdb"
+	pathToDB := "../sql/schema/testdb.db"
 	filename := "../../input.txt"
 	stopwordsfile := "../../stopwords.txt"
 	batchSize := 1000
+	limit := 25
 
 	db, err := sql.Open("sqlite3", pathToDB)
 	if err != nil {
 		log.Fatalf("couldn't connect to database: %v\n", err)
 	}
 
-	docID, err := loadFileIntoDatabase(filename, db, batchSize)
+	_, err = dbio.LoadFileIntoDatabase(filename, db, batchSize)
 	if err != nil {
 		log.Fatalf("couldn't load file into database: %v", err)
 	}
-
-	err = loadStopwordsIntoDatabase(stopwordsfile, db)
+	err = dbio.LoadStopwordsIntoDatabase(stopwordsfile, db)
 	if err != nil {
 		log.Fatalf("couldn't save stopwords in database: %v", err)
 	}
 
 	dbQueries := database.New(db)
-	limit := 25
-	wordsFreq, err := dbQueries.GetWordsFreq(context.Background(), database.GetWordsFreqParams{
-		ID: docID,
-		Limit: int64(limit),
-	})
-	for _, wf := range wordsFreq[:limit] {
-		fmt.Printf("%s  -  %d\n", wf.Word, wf.Freq)
-	}
-}
 
-func loadStopwordsIntoDatabase(stopwordsfile string, db *sql.DB) error {
-	data, err := os.ReadFile(stopwordsfile)
+	wordsCount, err := dbio.GetWordsCountPerDoc(dbQueries)
 	if err != nil {
-		return err
+		log.Fatalf("couldn't retrieve words count: %v", err)
 	}
-	stopwords := strings.Split(string(data), ",")
-
-	tx, err := db.Begin()
+	charsCount, err := dbio.GetCharsCountPerDoc(dbQueries)
 	if err != nil {
-		return err
+		log.Fatalf("couldn't retrieve chars count: %v", err)
 	}
-	defer tx.Rollback()
+	longestWords, err := dbio.GetLongestWordsPerDoc(dbQueries)
+	if err != nil {
+		log.Fatalf("couldn't retrieve longest word(s): %v", err)
+	}
+	combinedWordLength, err := dbio.GetCombinedLengthOfTop25WordsPerDoc(dbQueries)
+	if err != nil {
+		log.Fatalf("couldn't retrieve combined words length: %v", err)
+	}
+	docIDs, err := dbio.GetAllDocIDs(dbQueries)
+	if err != nil {
+		log.Fatalf("couldn't retrieve doc IDs: %v", err)
+	}
 
-	qtx := database.New(db).WithTx(tx)
-
-	for _, w := range stopwords {
-		err = qtx.AddStopWord(context.Background(), w)
+	fmt.Println("Top 25 - most frequent words per doc")
+	for _, did := range docIDs {
+		fmt.Printf("DocID: %d\n", did)
+		wordsFreq, err := dbio.GetWordsFreq(dbQueries, did, int64(limit))
 		if err != nil {
-			fmt.Printf("couldn't add stopword %s to database", w)
+			log.Fatalf("couldn't retrieve words frequences for doc id %d: %v", did, err)
 		}
-	}
-	for r := 'a'; r <= 'z'; r++ {
-		err = qtx.AddStopWord(context.Background(), string(r))
-		if err != nil {
-			fmt.Printf("couldn't add character %s to database", string(r))
+		for _, wf := range wordsFreq {
+			fmt.Printf("Word: %s  -  Freq: %d\n", wf.Word, wf.Freq)
 		}
-	}
-	return tx.Commit()
-}
-
-func loadFileIntoDatabase(filename string, db *sql.DB, batchSize int) (int64, error) {
-	words, err := extractWords(filename)
-	if err != nil {
-		return -1, err
+		fmt.Println()
 	}
 
-	queries := database.New(db)
-
-	doc, err := queries.AddDocument(context.Background(), filename)
-	if err != nil {
-		return -1, err
+	fmt.Println("-------------------------------\nWords count per document:")
+	for _, wc := range wordsCount {
+		fmt.Printf("DocID: %d  -  %d\n", wc.DocID, wc.WordsCount)
 	}
 
-	for i := 0; i < len(words); i += batchSize {
-		tx, err := db.Begin()
-		if err != nil {
-			return -1, err
-		}
-		defer tx.Rollback()
-
-		qtx := queries.WithTx(tx)
-
-		for j := 0; j < min(batchSize, len(words)-i); j++ {
-			w := strings.TrimSpace(words[j+i])
-			_, err := qtx.AddWord(context.Background(), database.AddWordParams{
-				Val:   w,
-				DocID: doc.ID,
-			})
-			if err != nil {
-				fmt.Printf("couldn't add word %s to database\n", w)
-				continue
-			}
-		}
-		err = tx.Commit()
-		if err != nil {
-			return -1, err
-		}
+	fmt.Println("-------------------------------\nChars count per document:")
+	for _, cc := range charsCount {
+		fmt.Printf("DocID: %d  -  %v\n", cc.DocID, cc.CharsCount.Float64)
 	}
 
-	return doc.ID, nil
-}
-
-func extractWords(filename string) ([]string, error) {
-	data, err := os.ReadFile(filename)
-	if err != nil {
-		return nil, err
+	fmt.Println("-------------------------------\nLongest word(s) per document:")
+	for _, w := range longestWords {
+		fmt.Printf("DocID: %d  -  %s\n", w.DocID, w.LongestWord)
 	}
-	normalized := normalizeText(string(data))
-	re := regexp.MustCompile(`\s+`)
-	return re.Split(normalized, -1), nil
-}
 
-func normalizeText(text string) string {
-	return strings.Map(func(r rune) rune {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) {
-			return unicode.ToLower(r)
-		}
-		return ' '
-	}, text)
+	fmt.Println("-------------------------------\nCombined length of top 25 words per document:")
+	for _, cl := range combinedWordLength {
+		fmt.Printf("DocID: %d  -  %v\n", cl.DocID, cl.CombinedLength.Float64)
+	}
 }
