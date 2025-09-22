@@ -9,6 +9,12 @@ type Document struct {
 	Name string
 }
 
+type Page struct {
+	ID     int64
+	Number int64
+	WordID int64
+}
+
 type Stopword struct {
 	ID  int64
 	Val string
