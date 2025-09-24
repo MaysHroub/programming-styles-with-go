@@ -11,8 +11,8 @@ type WordFrequencyController struct {
 }
 
 func NewWordFreqController(
-	dataStorageMgr DataStorageManager, 
-	stopWordsMgr StopWordsManager, 
+	dataStorageMgr DataStorageManager,
+	stopWordsMgr StopWordsManager,
 	wordFreqMgr WordFreqManager,
 ) WordFrequencyController {
 	return WordFrequencyController{

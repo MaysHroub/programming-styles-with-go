@@ -17,7 +17,7 @@ type pair struct {
 func main() {
 	// composing all functions together
 	filepath := "../../input.txt"
-	printAll(sortedPairs(countFrequencies(removeStopWords(convertToSlice(normalizeText(readData(filepath)))))))
+	printAll(sortedPairs(countFrequencies(removeStopWords(convertToSlice(normalize(readData(filepath)))))))
 }
 
 func readData(filepath string) (fileContent string) {
@@ -28,7 +28,7 @@ func readData(filepath string) (fileContent string) {
 	return string(data)
 }
 
-func normalizeText(text string) (normalizedText string) {
+func normalize(text string) (normalizedText string) {
 	return strings.Map(func(r rune) rune {
 		if unicode.IsLetter(r) || unicode.IsDigit(r) {
 			return unicode.ToLower(r)
@@ -38,12 +38,12 @@ func normalizeText(text string) (normalizedText string) {
 }
 
 func convertToSlice(text string) []string {
-	re := regexp.MustCompile(`\s+`)
-	return re.Split(text, -1)
+	re := regexp.MustCompile(`\S+`)
+	return re.FindAllString(text, -1)
 }
 
 func removeStopWords(words []string) []string {
-	data, err := os.ReadFile("../stopwords.txt")
+	data, err := os.ReadFile("../../stopwords.txt")
 	if err != nil {
 		return nil
 	}

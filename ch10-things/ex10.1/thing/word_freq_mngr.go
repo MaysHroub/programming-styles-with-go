@@ -24,11 +24,11 @@ func NewWordFreqManager() WordFreqManager {
 	}
 }
 
-func (w WordFreqManager) IncrementCount(word string) {
+func (w *WordFreqManager) IncrementCount(word string) {
 	w.wordsFreq[word]++
 }
 
-func (w WordFreqManager) ToSortedPairs() []Pair {
+func (w *WordFreqManager) ToSortedPairs() []Pair {
 	pairs := []Pair{}
 
 	for w, f := range w.wordsFreq {

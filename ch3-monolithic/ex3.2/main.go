@@ -18,7 +18,6 @@ var (
 )
 
 func main() {
-
 	// retrieve all stop words (with single letters)
 	stopWordsFileContent, err := os.ReadFile("../../../stopwords.txt")
 	if err != nil {

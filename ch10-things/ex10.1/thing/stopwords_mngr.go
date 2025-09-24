@@ -9,8 +9,8 @@ type StopWordsManager struct {
 	stopWords map[string]struct{}
 }
 
-func NewStopWordManager(filename string) StopWordsManager {
-	data, err := os.ReadFile(filename)
+func NewStopWordManager(filepath string) StopWordsManager {
+	data, err := os.ReadFile(filepath)
 	if err != nil {
 		return StopWordsManager{}
 	}

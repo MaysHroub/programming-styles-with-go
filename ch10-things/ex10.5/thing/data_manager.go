@@ -17,7 +17,7 @@ type DataManager struct {
 func NewDataManager(filepath string, nlinesPerPage int) *DataManager {
 	return &DataManager{
 		nlinesPerPage: nlinesPerPage,
-		filepath: filepath,
+		filepath:      filepath,
 	}
 }
 

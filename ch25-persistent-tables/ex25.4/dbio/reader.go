@@ -3,7 +3,7 @@ package dbio
 import (
 	"context"
 
-	"github.com/MaysHroub/programming-styles-with-go/persistent-tables/internal/database"
+	"github.com/MaysHroub/programming-styles-with-go/ch25-persistent-tables/internal/database"
 )
 
 func GetWordsFreq(dbQueries *database.Queries, docID, limit int64) ([]database.GetWordsFreqRow, error) {

@@ -18,17 +18,17 @@ type pair struct {
 }
 
 const (
-	stopwordsfilepath = "../stopwords.txt"
-	inputfilepath     = "../input.txt"
-	nlines            = 200
+	STOPWORDS_FILE_PATH = "../../stopwords.txt"
+	INPUT_FILE_PATH     = "../../input.txt"
+	NLINES              = 200
 )
 
 func main() {
-	data, err := os.ReadFile(inputfilepath)
+	data, err := os.ReadFile(INPUT_FILE_PATH)
 	if err != nil {
 		log.Fatalf("couldn't read file: %v", err)
 	}
-	chunks := partition(string(data), nlines)
+	chunks := partition(string(data), NLINES)
 
 	now := time.Now()
 
@@ -132,7 +132,7 @@ func removeStopWords(pairsLists [][]pair) [][]pair {
 }
 
 func getStopWords() map[string]struct{} {
-	data, err := os.ReadFile(stopwordsfilepath)
+	data, err := os.ReadFile(STOPWORDS_FILE_PATH)
 	if err != nil {
 		log.Fatalf("failed to read file: %v", err)
 	}

@@ -11,8 +11,8 @@ type DataStorageManager struct {
 	data string
 }
 
-func NewDataStorageManager(filename string) DataStorageManager {
-	data, err := os.ReadFile(filename)
+func NewDataStorageManager(filepath string) DataStorageManager {
+	data, err := os.ReadFile(filepath)
 	if err != nil {
 		return DataStorageManager{}
 	}
@@ -27,7 +27,7 @@ func NewDataStorageManager(filename string) DataStorageManager {
 	return DataStorageManager{data: strings.ToLower(normalizedText)}
 }
 
-func (d DataStorageManager) Words() []string {
+func (d *DataStorageManager) Words() []string {
 	re := regexp.MustCompile(`\s+`)
 	return re.Split(d.data, -1)
 }

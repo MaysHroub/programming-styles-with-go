@@ -18,7 +18,7 @@ type PageProcessor struct {
 
 func NewPageProcessor(pages []page, wordFreqLimit int) *PageProcessor {
 	return &PageProcessor{
-		pages: pages,
+		pages:         pages,
 		wordFreqLimit: wordFreqLimit,
 	}
 }

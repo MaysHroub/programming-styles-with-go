@@ -16,7 +16,7 @@ func NewDataProcessor(data string) DataProcessor {
 	}
 }
 
-func (d *DataProcessor) NormalizeData(){
+func (d *DataProcessor) NormalizeData() {
 	d.data = strings.Map(func(r rune) rune {
 		if unicode.IsLetter(r) || unicode.IsDigit(r) {
 			return unicode.ToLower(r)

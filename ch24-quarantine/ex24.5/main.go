@@ -13,11 +13,6 @@ import (
 	"unicode"
 )
 
-const (
-	FREQ_LIMIT_PER_WORD = 100
-	NLINES_PER_PAGE     = 45
-)
-
 type page struct {
 	content string
 	number  int
@@ -77,15 +72,16 @@ func normalize(lines any) (normalizedLines any) {
 }
 
 func separateIntoPages(lines any) (pages any) {
+	nlinesPerPage := 45
 	pages_ := []page{}
 	lines_ := lines.([]string)
 	p := 1
-	for i := 0; i < len(lines_); i += NLINES_PER_PAGE {
+	for i := 0; i < len(lines_); i += nlinesPerPage {
 
 		var content string
 
-		if len(lines_) >= i+NLINES_PER_PAGE {
-			content = strings.Join(lines_[i:i+NLINES_PER_PAGE], "\n")
+		if len(lines_) >= i+nlinesPerPage {
+			content = strings.Join(lines_[i:i+nlinesPerPage], "\n")
 		} else {
 			content = strings.Join(lines_[i:], " ")
 		}
@@ -109,9 +105,10 @@ func splitAndCountWords(pages any) (wordPagesMap any) {
 }
 
 func filterWords(wordPagesMap any) (filteredWordPagesMap any) {
+	freqLimitPerWord := 100
 	filteredMp := make(map[string][]int)
 	for w, nums := range wordPagesMap.(map[string][]int) {
-		if len(nums) > FREQ_LIMIT_PER_WORD || utf8.RuneCountInString(w) <= 1 {
+		if len(nums) > freqLimitPerWord || utf8.RuneCountInString(w) <= 1 {
 			continue
 		}
 		filteredMp[w] = nums

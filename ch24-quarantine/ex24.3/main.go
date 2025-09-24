@@ -35,10 +35,10 @@ func getInputFromConsole(any) (functionReturningConsoleInput any) {
 }
 
 // i/o infected
-func extractWords(filename any) (functionReturningExtractedWords any) {
+func extractWords(filepath any) (functionReturningExtractedWords any) {
 	return func() any {
-		filename_ := filename.(string)
-		data, err := os.ReadFile(filename_)
+		filepath_ := filepath.(string)
+		data, err := os.ReadFile(filepath_)
 		if err != nil {
 			return nil
 		}

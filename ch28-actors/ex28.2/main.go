@@ -3,7 +3,7 @@ package main
 import (
 	"sync"
 
-	"github.com/MaysHroub/programming-styles-with-go/actors/ex28.2/actor"
+	"github.com/MaysHroub/programming-styles-with-go/ch28-actors/ex28.2/actor"
 )
 
 func main() {

@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	FREQ_LIMIT_PER_WORD = 100
 	INPUT_FILENAME      = "../../input.txt"
+	FREQ_LIMIT_PER_WORD = 100
 	NLINES_PER_PAGE     = 45
 )
 

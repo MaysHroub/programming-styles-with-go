@@ -22,9 +22,9 @@ func main() {
 	nlinesPerPage := 45
 	freqLimitPerWord := 100
 	printSorted(
-		removeDuplicatedPageNums(
+		removeDuplicatedPageNumbers(
 			filterWords(freqLimitPerWord)(
-				splitAndCountWords(
+				recordPageNumbersForWords(
 					separateIntoPages(nlinesPerPage)(
 						normalize(
 							readData(filepath),
@@ -68,6 +68,9 @@ func normalize(lines []string) []string {
 
 func separateIntoPages(nlinesPerPage int) func([]string) []page {
 	return func(lines []string) []page {
+		if nlinesPerPage <= 0 {
+			return []page{}
+		}
 		pages := []page{}
 		p := 1
 		for i := 0; i < len(lines); i += nlinesPerPage {
@@ -77,7 +80,7 @@ func separateIntoPages(nlinesPerPage int) func([]string) []page {
 			if len(lines) >= i+nlinesPerPage {
 				content = strings.Join(lines[i:i+nlinesPerPage], "\n")
 			} else {
-				content = strings.Join(lines[i:], " ")
+				content = strings.Join(lines[i:], "\n")
 			}
 
 			pages = append(pages, page{content: content, number: p})
@@ -87,11 +90,11 @@ func separateIntoPages(nlinesPerPage int) func([]string) []page {
 	}
 }
 
-func splitAndCountWords(pages []page) map[string][]int {
-	re := regexp.MustCompile(`\s+`)
+func recordPageNumbersForWords(pages []page) map[string][]int {
+	re := regexp.MustCompile(`\S+`)
 	mp := map[string][]int{}
 	for _, page := range pages {
-		words := re.Split(page.content, -1)
+		words := re.FindAllString(page.content, -1)
 		for _, w := range words {
 			mp[w] = append(mp[w], page.number)
 		}
@@ -103,7 +106,7 @@ func filterWords(freqLimitPerWord int) func(map[string][]int) map[string][]int {
 	return func(wordPages map[string][]int) map[string][]int {
 		filteredMp := make(map[string][]int)
 		for w, nums := range wordPages {
-			if len(nums) > freqLimitPerWord || utf8.RuneCountInString(w) <= 1 {
+			if len(nums) > freqLimitPerWord || utf8.RuneCountInString(w) <= 1 { // we don't want singled-char words
 				continue
 			}
 			filteredMp[w] = nums
@@ -112,7 +115,7 @@ func filterWords(freqLimitPerWord int) func(map[string][]int) map[string][]int {
 	}
 }
 
-func removeDuplicatedPageNums(wordPages map[string][]int) map[string][]int {
+func removeDuplicatedPageNumbers(wordPages map[string][]int) map[string][]int {
 	noDuplicateWordPages := make(map[string][]int)
 	for w, nums := range wordPages {
 		mp := make(map[int]struct{})

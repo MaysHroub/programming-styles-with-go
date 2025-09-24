@@ -9,11 +9,11 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/MaysHroub/programming-styles-with-go/persistent-tables/internal/database"
+	"github.com/MaysHroub/programming-styles-with-go/ch25-persistent-tables/internal/database"
 )
 
-func LoadStopwordsIntoDatabase(stopwordsfile string, db *sql.DB) error {
-	data, err := os.ReadFile(stopwordsfile)
+func LoadStopwordsIntoDatabase(stopwordsfilepath string, db *sql.DB) error {
+	data, err := os.ReadFile(stopwordsfilepath)
 	if err != nil {
 		return err
 	}
@@ -41,7 +41,6 @@ func LoadStopwordsIntoDatabase(stopwordsfile string, db *sql.DB) error {
 	}
 	return tx.Commit()
 }
-
 
 func LoadFileIntoDatabase(filename string, db *sql.DB, batchSize int) (int64, error) {
 	words, err := extractWords(filename)
@@ -85,7 +84,6 @@ func LoadFileIntoDatabase(filename string, db *sql.DB, batchSize int) (int64, er
 	return doc.ID, nil
 }
 
-
 func extractWords(filename string) ([]string, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
@@ -104,4 +102,3 @@ func normalizeText(text string) string {
 		return ' '
 	}, text)
 }
-

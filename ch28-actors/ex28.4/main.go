@@ -3,16 +3,14 @@ package main
 import (
 	"sync"
 
-	"github.com/MaysHroub/programming-styles-with-go/actors/ex28.4/actor"
-)
-
-const (
-	INPUT_FILEPATH      = "../../input.txt"
-	NLINE_PER_PAGE      = 45
-	FREQ_LIMIT_PER_WORD = 100
+	"github.com/MaysHroub/programming-styles-with-go/ch28-actors/ex28.4/actor"
 )
 
 func main() {
+	inputfilepath := "../../input.txt"
+	nlinesPerPage := 45
+	freqLimitPerWord := 100
+
 	dm := actor.NewDataManager()
 	pm := actor.NewPageProcessManager()
 	wic := actor.NewWordIndexController()
@@ -29,9 +27,9 @@ func main() {
 		}(ac)
 	}
 
-	actor.Send(dm, actor.Message{"init", INPUT_FILEPATH, pm})
-	actor.Send(pm, actor.Message{"init", FREQ_LIMIT_PER_WORD, wic})
-	actor.Send(wic, actor.Message{"init", dm, NLINE_PER_PAGE})
+	actor.Send(dm, actor.Message{"init", inputfilepath, pm})
+	actor.Send(pm, actor.Message{"init", freqLimitPerWord, wic})
+	actor.Send(wic, actor.Message{"init", dm, nlinesPerPage})
 
 	actor.Send(wic, actor.Message{"start"})
 

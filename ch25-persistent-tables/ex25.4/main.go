@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/MaysHroub/programming-styles-with-go/persistent-tables/ex25.4/dbio"
-	"github.com/MaysHroub/programming-styles-with-go/persistent-tables/internal/database"
+	"github.com/MaysHroub/programming-styles-with-go/ch25-persistent-tables/ex25.4/dbio"
+	"github.com/MaysHroub/programming-styles-with-go/ch25-persistent-tables/internal/database"
 	_ "github.com/mattn/go-sqlite3"
 )
 

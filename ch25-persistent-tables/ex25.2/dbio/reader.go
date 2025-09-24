@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/MaysHroub/programming-styles-with-go/persistent-tables/internal/database"
+	"github.com/MaysHroub/programming-styles-with-go/ch25-persistent-tables/internal/database"
 )
 
 func GetWordsFreq(db *sql.DB, docID, limit int64) ([]database.GetWordsFreqRow, error) {

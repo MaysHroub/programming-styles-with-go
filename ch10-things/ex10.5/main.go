@@ -1,20 +1,18 @@
 package main
 
-import "github.com/MaysHroub/programming-styles-with-go/things/ex10.5/thing"
-
-const (
-	FREQ_LIMIT_PER_WORD = 100
-	INPUT_FILENAME      = "../../input.txt"
-	NLINES_PER_PAGE     = 45
-)
+import "github.com/MaysHroub/programming-styles-with-go/ch10-things/ex10.5/thing"
 
 func main() {
-	dm := thing.NewDataManager(INPUT_FILENAME, NLINES_PER_PAGE)
+	filepath := "../../input.txt"
+	nlinesPerPage := 45
+	freqLimitPerWord := 100
+
+	dm := thing.NewDataManager(filepath, nlinesPerPage)
 	dm.ExtractLines()
 	dm.Normalize()
 	pages := dm.SeparateIntoPages()
 
-	p := thing.NewPageProcessor(pages, FREQ_LIMIT_PER_WORD)
+	p := thing.NewPageProcessor(pages, freqLimitPerWord)
 	p.SplitAndCountWords()
 	p.FilterWords()
 	p.RemoveDuplicatedPageNums()

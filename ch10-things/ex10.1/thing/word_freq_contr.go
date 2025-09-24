@@ -10,15 +10,15 @@ type WordFrequencyController struct {
 	wordFreqMgr    WordFreqManager
 }
 
-func NewWordFreqController(inputFileName, stopWordsFileName string) WordFrequencyController {
+func NewWordFreqController(inputFilepath, stopWordsFilepath string) WordFrequencyController {
 	return WordFrequencyController{
-		dataStorageMgr: NewDataStorageManager(inputFileName),
-		stopWordsMgr:   NewStopWordManager(stopWordsFileName),
+		dataStorageMgr: NewDataStorageManager(inputFilepath),
+		stopWordsMgr:   NewStopWordManager(stopWordsFilepath),
 		wordFreqMgr:    NewWordFreqManager(),
 	}
 }
 
-func (wc WordFrequencyController) Run() {
+func (wc *WordFrequencyController) Run() {
 	words := wc.dataStorageMgr.Words()
 	for _, w := range words {
 		if wc.stopWordsMgr.IsStopWord(w) {
@@ -29,7 +29,7 @@ func (wc WordFrequencyController) Run() {
 
 	sortedPairs := wc.wordFreqMgr.ToSortedPairs()
 
-	for _, p := range sortedPairs[:25] {
+	for _, p := range sortedPairs[:min(25, len(sortedPairs))] {
 		fmt.Printf("%s\n", p.ToString())
 	}
 }
