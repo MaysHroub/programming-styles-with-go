@@ -1,5 +1,7 @@
 # CH24: Quarantine style
 
+Reminded you with covid-19 ;)
+
 ## Constraints of this style:
 
 1. Core program functions have no side effects of any kind, including IO.
