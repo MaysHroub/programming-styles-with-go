@@ -19,23 +19,21 @@ type pair struct {
 	freq int
 }
 
-const (
-	STOPWORDS_FILE_PATH = "../../stopwords.txt"
-	INPUT_FILE_PATH     = "../../input.txt"
-	NLINE               = 200
-)
-
 func main() {
-	data, err := os.ReadFile(INPUT_FILE_PATH)
+	inputfilepath := "../../input.txt"
+	stopwordsfilepath := "../../stopwords.txt"
+	nlines := 200
+
+	data, err := os.ReadFile(inputfilepath)
 	if err != nil {
 		log.Fatalf("couldn't read file: %v", err)
 	}
-	chunks := partition(string(data), NLINE)
+	chunks := partition(string(data), nlines)
 
 	now := time.Now()
 
 	pairsLists := mapConcurrent(split, chunks)
-	filteredPairs := removeStopWords(pairsLists)
+	filteredPairs := removeStopWords(stopwordsfilepath, pairsLists)
 	wordsFreq := reduce(countWords, filteredPairs)
 
 	fmt.Printf("Execution time: %v\n\n", time.Since(now))
@@ -128,8 +126,8 @@ func countWords(pairs1, pairs2 []pair) []pair {
 	return mergedPairs
 }
 
-func removeStopWords(pairsLists [][]pair) [][]pair {
-	stopwords := getStopWords()
+func removeStopWords(stopwordsfilepath string, pairsLists [][]pair) [][]pair {
+	stopwords := getStopWords(stopwordsfilepath)
 	filteredPairsList := [][]pair{}
 	for _, pairs := range pairsLists {
 		filteredPairs := []pair{}
@@ -143,8 +141,8 @@ func removeStopWords(pairsLists [][]pair) [][]pair {
 	return filteredPairsList
 }
 
-func getStopWords() map[string]struct{} {
-	data, err := os.ReadFile(STOPWORDS_FILE_PATH)
+func getStopWords(stopwordsfilepath string) map[string]struct{} {
+	data, err := os.ReadFile(stopwordsfilepath)
 	if err != nil {
 		log.Fatalf("failed to read file: %v", err)
 	}

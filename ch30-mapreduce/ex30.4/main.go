@@ -13,9 +13,7 @@ import (
 )
 
 const (
-	INPUT_FILENAME      = "../../input.txt"
 	FREQ_LIMIT_PER_WORD = 100
-	NLINES_PER_PAGE     = 45
 )
 
 type page struct {
@@ -24,7 +22,10 @@ type page struct {
 }
 
 func main() {
-	file, err := os.Open(INPUT_FILENAME)
+	inputfilepath := "../../input.txt"
+	nlinesPerPage := 45
+
+	file, err := os.Open(inputfilepath)
 	if err != nil {
 		log.Fatalf("couldn't open file: %v\n", err)
 	}
@@ -35,7 +36,7 @@ func main() {
 	}
 
 	normalizedLines := normalize(lines)
-	pages := separateIntoPages(normalizedLines, NLINES_PER_PAGE)
+	pages := separateIntoPages(normalizedLines, nlinesPerPage)
 	wordPagesList := map_(splitAndCount, pages)
 	reducedWordPagesMp := reduce(merge, wordPagesList)
 	removeDuplicatedPageNums(&reducedWordPagesMp)
