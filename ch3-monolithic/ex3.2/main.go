@@ -5,6 +5,8 @@ import (
 	"os"
 	"strings"
 	"unicode"
+
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 type pair struct {
@@ -19,7 +21,7 @@ var (
 
 func main() {
 	// retrieve all stop words (with single letters)
-	stopWordsFileContent, err := os.ReadFile("../../files/stopwords.txt")
+	stopWordsFileContent, err := os.ReadFile(config.StopWordsFile)
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		return
@@ -33,7 +35,7 @@ func main() {
 	}
 
 	// load the whole file then iterates through each character
-	inputFileContent, err := os.ReadFile("../../files/input.txt")
+	inputFileContent, err := os.ReadFile(config.InputFile)
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		return

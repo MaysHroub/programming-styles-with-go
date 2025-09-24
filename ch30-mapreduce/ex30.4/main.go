@@ -10,6 +10,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 const (
@@ -22,10 +24,9 @@ type page struct {
 }
 
 func main() {
-	inputfilepath := "../../files/input.txt"
 	nlinesPerPage := 45
 
-	file, err := os.Open(inputfilepath)
+	file, err := os.Open(config.InputFile)
 	if err != nil {
 		log.Fatalf("couldn't open file: %v\n", err)
 	}

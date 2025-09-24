@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	"github.com/MaysHroub/programming-styles-with-go/ch10-things/ex10.2/thing"
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 func main() {
-	filepath := "../../files/input.txt"
-	stopWordsFilepath := "../../files/stopwords.txt"
-	dsm := thing.NewDataStorageManager(filepath)
-	swm := thing.NewStopWordManager(stopWordsFilepath)
+	dsm := thing.NewDataStorageManager(config.InputFile)
+	swm := thing.NewStopWordManager(config.StopWordsFile)
 	wfm := thing.NewWordFreqManager()
 	controller := thing.NewWordFreqController(dsm, swm, wfm)
 	controller.Run()

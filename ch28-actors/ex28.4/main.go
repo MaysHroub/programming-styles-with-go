@@ -4,10 +4,10 @@ import (
 	"sync"
 
 	"github.com/MaysHroub/programming-styles-with-go/ch28-actors/ex28.4/actor"
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 func main() {
-	inputfilepath := "../../files/input.txt"
 	nlinesPerPage := 45
 	freqLimitPerWord := 100
 
@@ -27,7 +27,7 @@ func main() {
 		}(ac)
 	}
 
-	actor.Send(dm, actor.Message{"init", inputfilepath, pm})
+	actor.Send(dm, actor.Message{"init", config.InputFile, pm})
 	actor.Send(pm, actor.Message{"init", freqLimitPerWord, wic})
 	actor.Send(wic, actor.Message{"init", dm, nlinesPerPage})
 

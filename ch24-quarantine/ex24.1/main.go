@@ -7,6 +7,8 @@ import (
 	"sort"
 	"strings"
 	"unicode"
+
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 type pair struct {
@@ -59,7 +61,7 @@ func extractWords(filepath any) (functionReturningExtractedWords any) {
 func removeStopWords(words any) (functionReturningFilteredWords any) {
 	return func() any {
 		words_ := words.([]string)
-		data, err := os.ReadFile("../../files/stopwords.txt")
+		data, err := os.ReadFile(config.StopWordsFile)
 		if err != nil {
 			return nil
 		}

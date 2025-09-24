@@ -11,27 +11,25 @@ import (
 	"unicode"
 
 	"github.com/MaysHroub/programming-styles-with-go/ch25-persistent-tables/internal/database"
+	"github.com/MaysHroub/programming-styles-with-go/config"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	pathToDB := "../sql/schema/testdb.db"
-	filepath := "../../files/input.txt"
-	stopwordsfile := "../../files/stopwords.txt"
 	batchSize := 1000
 
-	db, err := sql.Open("sqlite3", pathToDB)
+	db, err := sql.Open("sqlite3", config.PathToDB)
 	if err != nil {
 		log.Fatalf("couldn't connect to database: %v\n", err)
 	}
 	db.SetMaxOpenConns(1)
 
-	docID, err := loadFileIntoDatabase(filepath, db, batchSize)
+	docID, err := loadFileIntoDatabase(config.InputFile, db, batchSize)
 	if err != nil {
 		log.Fatalf("couldn't load file into database: %v", err)
 	}
 
-	err = loadStopwordsIntoDatabase(stopwordsfile, db)
+	err = loadStopwordsIntoDatabase(config.StopWordsFile, db)
 	if err != nil {
 		log.Fatalf("couldn't save stopwords in database: %v", err)
 	}

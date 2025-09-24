@@ -4,12 +4,10 @@ import (
 	"sync"
 
 	"github.com/MaysHroub/programming-styles-with-go/ch28-actors/ex28.1/actor"
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 func main() {
-	inputfilepath := "../../files/input.txt"
-	stopwordfilepath := "../../files/stopwords.txt"
-
 	dsm := actor.NewDataStorageManager()
 	swm := actor.NewStopWordManager()
 	wfm := actor.NewWordFreqManager()
@@ -27,8 +25,8 @@ func main() {
 		}(ac)
 	}
 
-	actor.Send(swm, actor.Message{"init", stopwordfilepath, wfm})
-	actor.Send(dsm, actor.Message{"init", inputfilepath, swm})
+	actor.Send(swm, actor.Message{"init", config.StopWordsFile, wfm})
+	actor.Send(dsm, actor.Message{"init", config.InputFile, swm})
 	actor.Send(controller, actor.Message{"run", dsm})
 
 	wg.Wait()

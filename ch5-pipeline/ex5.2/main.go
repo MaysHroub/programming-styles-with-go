@@ -7,6 +7,8 @@ import (
 	"sort"
 	"strings"
 	"unicode"
+
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 type pair struct {
@@ -15,9 +17,7 @@ type pair struct {
 }
 
 func main() {
-	filepath := "../../files/input.txt"
-	stopWordsFilepath := "../../files/stopwords.txt"
-	printAll(sortedPairs(countFrequencies(removeStopWordsGivenFileName(stopWordsFilepath)(convertToSlice(normalize(readData(filepath)))))))
+	printAll(sortedPairs(countFrequencies(removeStopWordsGivenFileName(config.StopWordsFile)(convertToSlice(normalize(readData(config.InputFile)))))))
 }
 
 func readData(filename string) (fileContent string) {

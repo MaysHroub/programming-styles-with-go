@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 type pair struct {
@@ -18,11 +20,9 @@ type pair struct {
 }
 
 func main() {
-	inputfilepath := "../../files/input.txt"
-	stopwordsfilepath := "../../files/stopwords.txt"
 	nlines := 200
 
-	data, err := os.ReadFile(inputfilepath)
+	data, err := os.ReadFile(config.InputFile)
 	if err != nil {
 		log.Fatalf("couldn't read file: %v", err)
 	}
@@ -31,7 +31,7 @@ func main() {
 	now := time.Now()
 
 	pairsLists := map_(split, chunks)
-	filteredPairs := removeStopWords(stopwordsfilepath, pairsLists)
+	filteredPairs := removeStopWords(config.StopWordsFile, pairsLists)
 	wordsFreq := reduce(countWords, filteredPairs)
 
 	fmt.Printf("Execution time: %v\n\n", time.Since(now))

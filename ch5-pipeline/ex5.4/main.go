@@ -10,6 +10,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 type page struct {
@@ -18,7 +20,6 @@ type page struct {
 }
 
 func main() {
-	filepath := "../../files/input.txt"
 	nlinesPerPage := 45
 	freqLimitPerWord := 100
 	printSorted(
@@ -27,7 +28,7 @@ func main() {
 				recordPageNumbersForWords(
 					separateIntoPages(nlinesPerPage)(
 						normalize(
-							readData(filepath),
+							readData(config.InputFile),
 						),
 					),
 				),

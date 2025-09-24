@@ -6,22 +6,20 @@ import (
 	"regexp"
 
 	"github.com/MaysHroub/programming-styles-with-go/ch10-things/ex10.3/thing"
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 func main() {
-	filepath := "../../files/input.txt"
-	stopwordsFilepath := "../../files/stopwords.txt"
-
-	inputDataReader := thing.NewDataReader(filepath)
-	stopwordsDataReader := thing.NewDataReader(stopwordsFilepath)
+	inputDataReader := thing.NewDataReader(config.InputFile)
+	stopwordsDataReader := thing.NewDataReader(config.StopWordsFile)
 
 	inputData, err := inputDataReader.Read()
 	if err != nil {
-		log.Fatalf("couldn't read data from file %s: %v\n", filepath, err)
+		log.Fatalf("couldn't read data from file %s: %v\n", config.InputFile, err)
 	}
 	stopwordsData, err := stopwordsDataReader.Read()
 	if err != nil {
-		log.Fatalf("couldn't read data from file %s: %v\n", stopwordsFilepath, err)
+		log.Fatalf("couldn't read data from file %s: %v\n", config.StopWordsFile, err)
 	}
 
 	wordProcessor := thing.NewDataProcessor(inputData)

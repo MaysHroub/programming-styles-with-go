@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"unicode"
+
+	"github.com/MaysHroub/programming-styles-with-go/config"
 )
 
 // declare our global variables
@@ -21,7 +23,7 @@ var (
 
 func main() {
 	// retrieve all stop words (with single letters)
-	stopWordsFileContent, err := os.ReadFile("../../files/stopwords.txt")
+	stopWordsFileContent, err := os.ReadFile(config.StopWordsFile)
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		return
@@ -35,7 +37,7 @@ func main() {
 	}
 
 	// open the file and read it line by line
-	inputFile, err := os.Open("../../files/input.txt")
+	inputFile, err := os.Open(config.InputFile)
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		return

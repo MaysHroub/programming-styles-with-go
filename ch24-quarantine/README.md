@@ -27,3 +27,8 @@ You also need to implement a quarantine class the does lazy evaluation of the ch
 It's similar to the implementation of the pipeline style, but this time it uses high-order functions to quarantine IO and implements a quarantine struct that stores functions through its `bind` method and execute them in main via its `execute` method.
 
 It was a bit tricky to implement the quarantine struct and the functions since Go is a strictly typed language and types are defined in compile time. So, I had to use `any` as the type of parameters and return values for the functions so that I can use them with the `quarantine` struct.
+
+
+## Note
+
+The code of this style takes the input file path as an argument when running the file, so pass `./files/input.txt` when running the file from root directory.

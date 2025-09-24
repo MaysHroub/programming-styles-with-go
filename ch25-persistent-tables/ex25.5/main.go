@@ -13,6 +13,7 @@ import (
 	"unicode"
 
 	"github.com/MaysHroub/programming-styles-with-go/ch25-persistent-tables/internal/database"
+	"github.com/MaysHroub/programming-styles-with-go/config"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -23,24 +24,21 @@ type page struct {
 }
 
 func main() {
-	filepath := "../../files/input.txt"
-
-	pathToDB := "../sql/schema/testdb.db"
 	dbDriver := "sqlite3"
 	nlinesPerPage := 45
 	batchSize := 1000
 	limit := 25
 
-	db, err := sql.Open(dbDriver, pathToDB)
+	db, err := sql.Open(dbDriver, config.PathToDB)
 	if err != nil {
 		log.Fatalf("couldn't connect to database: %v\n", err)
 	}
 
-	lines := readData(filepath)
+	lines := readData(config.InputFile)
 	normalizedLines := normalize(lines)
 	pages := separateIntoPages(normalizedLines, nlinesPerPage)
 
-	docID, err := saveDocument(db, filepath)
+	docID, err := saveDocument(db, config.InputFile)
 	if err != nil {
 		log.Fatalf("couldn't save document with id %d: %v", docID, err)
 	}
@@ -79,9 +77,9 @@ func printSorted(wordPages map[string][]int) {
 	}
 }
 
-func saveDocument(db *sql.DB, filepath string) (int64, error) {
+func saveDocument(db *sql.DB, docName string) (int64, error) {
 	queries := database.New(db)
-	doc, err := queries.AddDocument(context.Background(), filepath)
+	doc, err := queries.AddDocument(context.Background(), docName)
 	if err != nil {
 		return -1, err
 	}
