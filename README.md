@@ -54,9 +54,7 @@ Run this from the root directory of the project, otherwise it won't work.
 
 This repository is for educational purposes - it's designed to be studied and referenced, not executed as a runnable application. (Well, it's not that anyone would study it)
 
-Also, I honestly didn't enjoy making it :/ (yes, a sad programmer is here)
-
-
+And.. NO, I won't add any documentation.
 
 
 
