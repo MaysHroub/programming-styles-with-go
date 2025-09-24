@@ -35,12 +35,14 @@ func (p *PageProcessor) SplitAndCountWords() {
 }
 
 func (p *PageProcessor) FilterWords() {
+	filtered := make(map[string][]int)
 	for w, nums := range p.wordPages {
 		if len(nums) > p.wordFreqLimit || utf8.RuneCountInString(w) <= 1 {
 			continue
 		}
-		p.wordPages[w] = nums
+		filtered[w] = nums
 	}
+	p.wordPages = filtered
 }
 
 func (p *PageProcessor) RemoveDuplicatedPageNums() {
