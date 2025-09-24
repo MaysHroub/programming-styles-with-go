@@ -191,7 +191,7 @@ cd programming-styles-with-go/
 
 ## How to Run
 
-Honestly, I don't know why you would this. It will give you the same output regardless of the style you choose :)
+Honestly, I don't know why you would do this. It will give you the same output regardless of the style you choose :)
 
 *Anywaaaaay,* 
 
