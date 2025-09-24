@@ -35,7 +35,7 @@ func (wfc *WordFreqController) AddToMailbox(message Message) {
 
 func (wfc *WordFreqController) displayPairs(message Message) {
 	pairs := message[0].([]pair)
-	for _, pair := range pairs[:25] {
+	for _, pair := range pairs[:min(25, len(pairs))] {
 		fmt.Printf("%s  --  %d\n", pair.word, pair.freq)
 	}
 	go func() {

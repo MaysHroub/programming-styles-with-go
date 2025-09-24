@@ -21,7 +21,7 @@ func (wm *WordIndexManager) PrintSorted() {
 		words = append(words, w)
 	}
 	sort.Strings(words)
-	for _, w := range words[:25] {
+	for _, w := range words[:min(25, len(words))] {
 		fmt.Printf("word: %v\npages: %v\n\n", w, wm.wordPages[w])
 	}
 }

@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 type quarantine struct {
 	funcs []func(any) any // list of pure functions
 }
@@ -24,7 +20,7 @@ func (q *quarantine) execute() {
 	for _, f := range q.funcs {
 		val = f(guardCallable(val))
 	}
-	fmt.Println(guardCallable(val))
+	guardCallable(val) // this will call printTop25
 }
 
 func guardCallable(v any) any {

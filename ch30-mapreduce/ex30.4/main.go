@@ -46,7 +46,7 @@ func main() {
 }
 
 func print_(wordPages map[string][]int, words []string) {
-	for _, w := range words[:25] {
+	for _, w := range words[:min(25, len(words))] {
 		fmt.Printf("word: %v\npages: %v\n\n", w, wordPages[w])
 	}
 }

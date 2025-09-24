@@ -62,9 +62,8 @@ func sortedPairs(wordsFreq map[string]int) []pair {
 }
 
 func printAll(wordsFreq []pair) {
-	if len(wordsFreq) > 0 {
-		fmt.Printf("%s  -  %d\n", wordsFreq[0].word, wordsFreq[0].freq)
-		printAll(wordsFreq[1:])
+	for _, wf := range wordsFreq[:min(25, len(wordsFreq))] {
+		fmt.Printf("%s  -  %d\n", wf.word, wf.freq)
 	}
 }
 

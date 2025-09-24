@@ -109,7 +109,7 @@ func toSortedPairs(wordsFreqMap any) (sortedPairs any) {
 func printTop25(pairs any) (functionPrintingToStdout any) {
 	return func() any {
 		pairs_ := pairs.([]pair)
-		for _, p := range pairs_ {
+		for _, p := range pairs_[:min(25, len(pairs_))] {
 			fmt.Printf("%s  -  %d\n", p.word, p.freq)
 		}
 		return nil

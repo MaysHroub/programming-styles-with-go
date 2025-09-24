@@ -42,7 +42,7 @@ func main() {
 		return wordsFreq[i].freq >= wordsFreq[j].freq
 	})
 
-	for _, wf := range wordsFreq[:25] {
+	for _, wf := range wordsFreq[:min(25, len(wordsFreq))] {
 		fmt.Printf("%s  --  %d\n", wf.word, wf.freq)
 	}
 }

@@ -110,7 +110,7 @@ func toSortedPairs(wordsFreqMap any) (sortedPairs any) {
 func getTop25(pairs any) (top25AsString any) {
 	pairs_ := pairs.([]pair)
 	top25 := ""
-	for _, p := range pairs_ {
+	for _, p := range pairs_[:min(25, len(pairs_))] {
 		top25 += fmt.Sprintf("%s  -  %d\n", p.word, p.freq)
 	}
 	return top25

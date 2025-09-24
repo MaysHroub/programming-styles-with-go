@@ -138,7 +138,7 @@ func printSorted(wordPages map[string][]int) {
 		words = append(words, w)
 	}
 	sort.Strings(words)
-	for _, w := range words[:25] {
+	for _, w := range words[:min(25, len(wordPages))] {
 		fmt.Printf("word: %v\npages: %v\n\n", w, wordPages[w])
 	}
 }

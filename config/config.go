@@ -7,4 +7,4 @@ const InputFile = "files/input.txt"
 const StopWordsFile = "files/stopwords.txt"
 
 // This is for ch25: persistent tables
-const PathToDB = "../sql/schema/testdb.db"
+const PathToDB = "ch25-persistent-tables/sql/schema/testdb.db"

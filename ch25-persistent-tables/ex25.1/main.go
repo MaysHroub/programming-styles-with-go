@@ -24,7 +24,7 @@ func main() {
 	}
 	db.SetMaxOpenConns(1)
 
-	docID, err := loadFileIntoDatabase(config.InputFile, db, batchSize)
+	docID, err := loadFileIntoDatabase("./files/input.txt", db, batchSize)
 	if err != nil {
 		log.Fatalf("couldn't load file into database: %v", err)
 	}
