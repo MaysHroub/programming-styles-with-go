@@ -114,7 +114,7 @@ func removeStopWords(stopwordsfilepath string, pairsLists [][]pair) [][]pair {
 	for _, pairs := range pairsLists {
 		filteredPairs := []pair{}
 		for _, p := range pairs {
-			if _, ok := stopwords[p.word]; ok {
+			if _, ok := stopwords[p.word]; !ok {
 				filteredPairs = append(filteredPairs, p)
 			}
 		}
