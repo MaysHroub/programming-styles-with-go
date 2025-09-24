@@ -16,7 +16,7 @@ type pair struct {
 
 func main() {
 	// composing all functions together
-	filepath := "../../input.txt"
+	filepath := "../../files/input.txt"
 	printAll(sortedPairs(countFrequencies(removeStopWords(convertToSlice(normalize(readData(filepath)))))))
 }
 
@@ -43,7 +43,7 @@ func convertToSlice(text string) []string {
 }
 
 func removeStopWords(words []string) []string {
-	data, err := os.ReadFile("../../stopwords.txt")
+	data, err := os.ReadFile("../../files/stopwords.txt")
 	if err != nil {
 		return nil
 	}

@@ -59,7 +59,7 @@ func extractWords(filepath any) (functionReturningExtractedWords any) {
 func removeStopWords(words any) (functionReturningFilteredWords any) {
 	return func() any {
 		words_ := words.([]string)
-		data, err := os.ReadFile("../stopwords.txt")
+		data, err := os.ReadFile("../../files/stopwords.txt")
 		if err != nil {
 			return nil
 		}

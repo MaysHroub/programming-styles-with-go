@@ -8,8 +8,8 @@ import (
 
 func main() {
 
-	inputfilepath := "../../input.txt"
-	stopwordfilepath := "../../stopwords.txt"
+	inputfilepath := "../../files/input.txt"
+	stopwordfilepath := "../../files/stopwords.txt"
 
 	dsm := actor.NewDataStorageManager()
 	wfm := actor.NewWordFreqManager()

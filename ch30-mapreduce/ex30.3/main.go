@@ -20,8 +20,8 @@ type pair struct {
 }
 
 func main() {
-	inputfilepath := "../../input.txt"
-	stopwordsfilepath := "../../stopwords.txt"
+	inputfilepath := "../../files/input.txt"
+	stopwordsfilepath := "../../files/stopwords.txt"
 	nlines := 200
 
 	data, err := os.ReadFile(inputfilepath)

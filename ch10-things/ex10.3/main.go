@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	filepath := "../../input.txt"
-	stopwordsFilepath := "../../stopwords.txt"
+	filepath := "../../files/input.txt"
+	stopwordsFilepath := "../../files/stopwords.txt"
 
 	inputDataReader := thing.NewDataReader(filepath)
 	stopwordsDataReader := thing.NewDataReader(stopwordsFilepath)

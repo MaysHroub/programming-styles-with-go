@@ -21,7 +21,7 @@ var (
 
 func main() {
 	// retrieve all stop words (with single letters)
-	stopWordsFileContent, err := os.ReadFile("../../../stopwords.txt")
+	stopWordsFileContent, err := os.ReadFile("../../files/stopwords.txt")
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		return
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	// open the file and read it line by line
-	inputFile, err := os.Open("../../../input.txt")
+	inputFile, err := os.Open("../../files/input.txt")
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		return

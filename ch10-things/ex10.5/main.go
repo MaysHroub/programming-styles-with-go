@@ -3,7 +3,7 @@ package main
 import "github.com/MaysHroub/programming-styles-with-go/ch10-things/ex10.5/thing"
 
 func main() {
-	filepath := "../../input.txt"
+	filepath := "../../files/input.txt"
 	nlinesPerPage := 45
 	freqLimitPerWord := 100
 

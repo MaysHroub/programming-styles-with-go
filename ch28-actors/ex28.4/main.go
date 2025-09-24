@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	inputfilepath := "../../input.txt"
+	inputfilepath := "../../files/input.txt"
 	nlinesPerPage := 45
 	freqLimitPerWord := 100
 

@@ -23,7 +23,7 @@ type page struct {
 }
 
 func main() {
-	filepath := "../../input.txt"
+	filepath := "../../files/input.txt"
 
 	pathToDB := "../sql/schema/testdb.db"
 	dbDriver := "sqlite3"

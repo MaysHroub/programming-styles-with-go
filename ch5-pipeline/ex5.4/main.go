@@ -18,7 +18,7 @@ type page struct {
 }
 
 func main() {
-	filepath := "../../input.txt"
+	filepath := "../../files/input.txt"
 	nlinesPerPage := 45
 	freqLimitPerWord := 100
 	printSorted(

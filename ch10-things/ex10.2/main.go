@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	filepath := "../../input.txt"
-	stopWordsFilepath := "../../stopwords.txt"
+	filepath := "../../files/input.txt"
+	stopWordsFilepath := "../../files/stopwords.txt"
 	dsm := thing.NewDataStorageManager(filepath)
 	swm := thing.NewStopWordManager(stopWordsFilepath)
 	wfm := thing.NewWordFreqManager()

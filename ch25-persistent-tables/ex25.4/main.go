@@ -12,8 +12,8 @@ import (
 
 func main() {
 	pathToDB := "../sql/schema/testdb.db"
-	filepath := "../../input.txt"
-	stopwordsfile := "../../stopwords.txt"
+	filepath := "../../files/input.txt"
+	stopwordsfile := "../../files/stopwords.txt"
 	batchSize := 1000
 	limit := 25
 
