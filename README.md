@@ -22,6 +22,11 @@ Each style, along with its exercises, is implemented in a separate package.
 A `README.md` file is added in each package and explains some information about the style, its constraints, and how I implemented the term frequency task in Go.
 
 
+## Prerequisites
+- Go 1.19+ 
+- C compiler (gcc/clang) for SQLite3 driver compilation
+
+
 ## Installation
 
 ### 1. If you have Go in your machine
