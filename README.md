@@ -1,6 +1,6 @@
 # Programming Styles With Go
 
-[*Exercises in Programming Style*](https://www.goodreads.com/book/show/23012704-exercises-in-programming-style) is a book that illustrates different styles in programming. The author implements the same task across all chapters, each in a different style: **The Term Frequency** task, in which it calculates the frequencies of words in a given file and displays the top 25 most frequent words after removing the stop words. The author writes the task's code in python, but I have implemented it, and the other exercises, in Go.
+[*Exercises in Programming Style*](https://www.goodreads.com/book/show/18266291-exercises-in-programming-style) is a book that illustrates different styles in programming. The author implements the same task across all chapters, each in a different style: **The Term Frequency** task, in which it calculates the frequencies of words in a given file and displays the top 25 most frequent words after removing the stop words. The author writes the task's code in python, but I have implemented it, and the other exercises, in Go.
 
 The last exercise of each chapter requires implementing one of the tasks presented in the *Prologue* in the corresponding style. The task I chose is **Word-Index**, in which you record the pages the word occured in and displays the top 25 word after sorting them in an alphabetical order. You specify the pages and how many lines each one should have. Also, if the word occurs more than 100 time, it's removed.
 
